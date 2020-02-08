@@ -97,5 +97,5 @@ for s_name in sheet_names:
     writer.save()
     print('Ожидайте...',time_1)
     time_1 = time_1 - 1
-print('Форматирование завершено!')
+print('!!!Форматирование завершено!!!')
 driver.close()
