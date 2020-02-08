@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 
 # Загружаем входной файл
-input_table: str = '/Users/egoryurihin/Downloads/Боевая таблица за 2015 год.xlsx'
+input_table = '/Users/egoryurihin/Downloads/Боевая таблица за 2015 год.xlsx'
 
 # Определяем место расположения выходного файла
 output_table = '/Users/egoryurihin/Downloads/Новая Боевая таблица за 2015 год.xlsx'
@@ -34,7 +34,7 @@ driver.get("https://eduscan.net/help/phone")
 elem = driver.find_element_by_name("num")
 
 # Создаем счетчик для отсчета итераций при ожидании
-time_1: int = len(sheet_names)-1
+time_1 = len(sheet_names)-1
 
 # Создаем список с наименованием столбцов
 c_names = ['ID', 'Дата', 'Запрос/Клиент', 'Менеджер', 'Источник информации о нас', 'Чем интересуется', 'Итог',
