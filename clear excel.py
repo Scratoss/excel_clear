@@ -28,10 +28,10 @@ options.add_argument("--disable-gpu")
 driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
 
 # Задаем адрес страницы
-driver.get("https://eduscan.net/help/phone")
+driver.get("https://www.kody.su/check-tel#text")
 
 # Находим форму ввода
-elem = driver.find_element_by_name("num")
+elem = driver.find_element_by_name("/html/body/div/div[2]/div/div[1]/div/form/input[1]")
 
 # Создаем счетчик для отсчета итераций при ожидании
 time_1 = len(sheet_names)-1
@@ -77,50 +77,87 @@ for s_name in sheet_names:
             e_mail[i] = '!Почта не указана!'
     df['Электронная почта'] = e_mail # Добавляем новый столбец и вносим в него почтовые адреса
 
+    #  Добавляем вспомогательный определитель региона  по интернет
+    internet_region = []
+    for i in client[0]:
+        if '.ru' in i:
+            internet_region.append('ru')
+        else:
+            internet_region.append('not')
+
+
     # Обрабатываем номера телефонов
     phones = []
-    for i in client[0]:
-        phones.append(re.findall('[0-9+]+\d', i))
-    phone = []
+    ffor i in client[0]:
+        phones.append(re.findall('[0-9+]*\d',i))
+    phone=[]
     for i in phones:
         phone.append(''.join(i))
-    for i in range(0, len(phone)):
-        if len(phone[i]) < 11:
-            phone[i] = '0'
-    for i in range(0, len(phone)):
-        if '+' in phone[i]:
-            phone[i] = phone[i].split('+')
+    print(phone[39])
+    for i in range(0,len(phone)):
+        if len(phone[i])<10:
+            phone[i]='0'
+        if '+'in phone[i]:
+            phone[i]= phone[i].split('+')
     for i in phone:
-        if len(i) > 1 and i[0] == '':
+        if len(i)>1 and i[0]=='':
             i.remove(i[0])
-    for i in range(0, len(phone)):
-        if type(phone[i]) == list and len(phone[i]) == 1:
-            phone[i] = phone[i][0]
-    for i in range(0, len(phone)):
-        if phone[i][0] == '8':
-            phone[i] = phone[i].replace('8', '7', 1)
-    for i in range(0, len(phone)):
-        if phone[i] == '0':
-            phone[i] = '!Телефон не указан!'
-    for i in range(0, len(phone)):
-        if type(phone[i]) == list:
-            phone[i] = phone[i][0]
+    for i in range(0,len(phone)):
+        if type (phone[i])== list:
+            if len(phone[i][0])>10:
+                phone[i]=phone[i][0][:11]
+            else:
+                phone[i]=phone[i][1][:11]
+        if type(phone[i])==list and len(phone[i])==1:
+            phone[i]=phone[i][0]
+        if phone[i][0]=='8' and len(phone[i])>10:
+            phone[i]=phone[i].replace('8','7',1)
+        if phone[i] =='0':
+            phone[i]='!Телефон не указан!'
+    for i in range(0,len(phone)):
+        if phone[i][0]!='7' and phone[i][0]!='3' and internet_region[i]=='ru' and phone[i]!='!Телефон не указан!':
+            phone[i]='7'+phone[i]
+        elif phone[i][0]=='3' and internet_region[i]=='ru' and phone[i]!='!Телефон не указан!':
+            phone[i]='7'+phone[i]
+
+    for i in range(0,len(phone)):
+        if phone[i] != '!Телефон не указан!' and internet_region[i]=='ru':
+                phone[i]=re.findall('[7][0-9]{10}',phone[i])
+                if phone[i]!=[]:
+                    phone[i]=phone[i][0]
+
+
 
     # Определяем по телефону регион путем заполнения формы на сайте https://eduscan.net/help/phone и считывания региона
     region_name = []
+    city_name = []
+
     for i in phone:
-        if i != '!Телефон не указан!':
-            elem.send_keys(i[:10])
+        if i != '!Телефон не указан!' and len(i) > 10:
+            elem.send_keys(i[:11])
             elem.send_keys(Keys.ENTER)
-            region = driver.find_element_by_id("sstring3")
-            region_name.append(region.text)
-            elem.clear()
+            try:
+                region = driver.find_element_by_xpath('/html/body/div/div[2]/div/div[1]/div/table/tbody/tr[2]/td[1]/strong')
+                city = driver.find_element_by_xpath('/html/body/div/div[2]/div/div[1]/div/table/tbody/tr[2]/td[2]/strong')
+                elem = driver.find_element_by_xpath("/html/body/div[1]/div[2]/div/div[1]/div/form/input[1]")
+                elem.clear()
+                region_name.append(region)
+                city_name.append(city)
+            except:
+                region_name.append('Ошибка: Номер не найден')
+                city_name.append('Ошибка: Номер не найден')
+                elem = driver.find_element_by_xpath("/html/body/div[1]/div[2]/div/div[1]/div/form/input[1]")
+                elem.clear()
+                continue
         else:
             region_name.append('!Регион не определен!')
+
     for i in range(0, len(region_name)):
         if region_name[i] == '':
             region_name[i] = '!Регион не определен!'
-    df['Регион'] = region_name # Создаем новый столбец и заполняем его наименованием регионов
+
+    df['Регион'] = region_name # Создаем новый столбец со страной
+    df['Город'] = city_name #Создаем новый столбец с регионом
 
     # Сохраняем данные в файл в новую страницу
     book = load_workbook(output_table)
