@@ -98,7 +98,6 @@ for s_name in sheet_names:
     phone=[]
     for i in phones:
         phone.append(''.join(i))
-    print(phone[39])
     for i in range(0,len(phone)):
         if len(phone[i])<10:
             phone[i]='0'
@@ -133,7 +132,7 @@ for s_name in sheet_names:
 
 
 
-    # Определяем по телефону регион путем заполнения формы на сайте https://eduscan.net/help/phone и считывания региона
+    # Определяем по телефону регион путем заполнения формы на сайте https://www.kody.su/check-tel#text и считывания региона
     region_name = []
     city_name = []
 
@@ -156,7 +155,7 @@ for s_name in sheet_names:
                 continue
         else:
             region_name.append('!Регион не определен!')
-
+            city_name.append('!Регион не определен!')
     for i in range(0, len(region_name)):
         if region_name[i] == '':
             region_name[i] = '!Регион не определен!'
