@@ -69,12 +69,17 @@ for s_name in sheet_names:
             e_mails.append(re.findall('[a-zA-z0-9\.]+[@][a-zA-z0-9\S]+[.][a-zA-z]*\w', e))
         else:
             e_mails.append('0')
+    for i in range(0, len(e_mails)):
+        if e_mails[i] == []:
+            e_mails[i] = '0'
+        if e_mails[i] == '0':
+            e_mails[i] = '!Почта не указана!'
     e_mail = []
-    for i in e_mails:
-        e_mail.append(i)
-    for i in range(0, len(e_mail)):
-        if e_mail[i] == '0':
-            e_mail[i] = '!Почта не указана!'
+    for i in range(0, len(e_mails)):
+        if e_mails[i] != '!Почта не указана!':
+            e_mail.append(e_mails[i][0])
+        else:
+            e_mail.append(e_mails[i])
     df['Электронная почта'] = e_mail # Добавляем новый столбец и вносим в него почтовые адреса
 
     #  Добавляем вспомогательный определитель региона  по интернет
@@ -88,7 +93,7 @@ for s_name in sheet_names:
 
     # Обрабатываем номера телефонов
     phones = []
-    ffor i in client[0]:
+    for i in client[0]:
         phones.append(re.findall('[0-9+]*\d',i))
     phone=[]
     for i in phones:
