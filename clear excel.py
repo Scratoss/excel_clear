@@ -31,7 +31,7 @@ driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=option
 driver.get("https://www.kody.su/check-tel#text")
 
 # Находим форму ввода
-elem = driver.find_element_by_name("/html/body/div/div[2]/div/div[1]/div/form/input[1]")
+elem = driver.find_element_by_xpath("/html/body/div/div[2]/div/div[1]/div/form/input[1]")
 
 # Создаем счетчик для отсчета итераций при ожидании
 time_1 = len(sheet_names)-1
