@@ -130,8 +130,6 @@ for s_name in sheet_names:
                 if phone[i]!=[]:
                     phone[i]=phone[i][0]
 
-
-
     # Определяем по телефону регион путем заполнения формы на сайте https://www.kody.su/check-tel#text и считывания региона
     region_name = []
     city_name = []
@@ -159,7 +157,12 @@ for s_name in sheet_names:
     for i in range(0, len(region_name)):
         if region_name[i] == '':
             region_name[i] = '!Регион не определен!'
-
+    for i in range(0,len(city_name)):
+        if '[' in city_name[i]:
+            city_name[i]=re.findall('[\[][а-яА-я\s-]+\w',city_name[i])
+    for i in range(0,len(city_name)):
+        if type(city_name[i])==list:
+            city_name[i]=city_name[i][0][1:]
     df['Регион'] = region_name # Создаем новый столбец со страной
     df['Город'] = city_name #Создаем новый столбец с регионом
 
