@@ -85,7 +85,7 @@ for s_name in sheet_names:
     #  Добавляем вспомогательный определитель региона  по интернет
     internet_region = []
     for i in client[0]:
-        if '.ru' in i:
+        if ('.ru' in i) or ('ООО' in i) or ('ЗАО' in i) or ('ОАО' in i):
             internet_region.append('ru')
         else:
             internet_region.append('not')
