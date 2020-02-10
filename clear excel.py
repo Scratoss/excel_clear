@@ -145,8 +145,8 @@ for s_name in sheet_names:
                 city = driver.find_element_by_xpath('/html/body/div/div[2]/div/div[1]/div/table/tbody/tr[2]/td[2]/strong')
                 elem = driver.find_element_by_xpath("/html/body/div[1]/div[2]/div/div[1]/div/form/input[1]")
                 elem.clear()
-                region_name.append(region)
-                city_name.append(city)
+                region_name.append(region.text)
+                city_name.append(city.text)
             except:
                 region_name.append('Ошибка: Номер не найден')
                 city_name.append('Ошибка: Номер не найден')
